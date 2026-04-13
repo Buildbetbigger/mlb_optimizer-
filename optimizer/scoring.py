@@ -302,7 +302,7 @@ def compute_coherence(lineup: Any, script_name: str, preset: Mapping[str, Any]) 
     primary_stack_team = most_common_team(hitter_pool)
     preferred = SCRIPT_PREFERRED_ARCHETYPES.get(script_name, [])
 
-    captain_archetype = getattr(lineup, "captain_archetype", None)
+    captain_archetype = getattr(lineup, "captain_archetype", None) or "unclassified"
     script_fit = 1.0 if captain_archetype in preferred else PARTIAL_SCRIPT_FIT
 
     captain_alignment = (
