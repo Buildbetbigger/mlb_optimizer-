@@ -1,0 +1,21 @@
+first_name,last_name,position,injury_status,game_date,slate,team,opp,confirmed_order,starting_pitcher,hand,spread,over_under,implied_team_score,salary,L5_fppg_avg,L10_fppg_avg,szn_fppg_avg,ppg_projection,value_projection
+Jacob,deGrom,P,,4/12/26,TEX @ LAD,TEX,LAD,,YES,R,1.5,8.5,4.1,11200,16.6,18.5,17.5,16.7,1.49
+Roki,Sasaki,P,,4/12/26,TEX @ LAD,LAD,TEX,,YES,R,-1.5,8.5,4.4,10600,3.9,3.6,7.9,12.8,1.21
+Shohei,Ohtani,1B,,4/12/26,TEX @ LAD,LAD,TEX,1,,L,-1.5,8.5,4.4,10200,10.8,14.2,11.5,10.9,1.07
+Kyle,Tucker,OF,,4/12/26,TEX @ LAD,LAD,TEX,2,,L,-1.5,8.5,4.4,9800,7.4,8.2,8.5,8.8,0.9
+Corey,Seager,SS,,4/12/26,TEX @ LAD,TEX,LAD,3,,L,1.5,8.5,4.1,8000,8.2,8.1,8.4,8.6,1.08
+Brandon,Nimmo,OF,,4/12/26,TEX @ LAD,TEX,LAD,1,,L,1.5,8.5,4.1,7600,10.4,9.2,10.4,8.1,1.07
+Evan,Carter,OF,,4/12/26,TEX @ LAD,TEX,LAD,2,,L,1.5,8.5,4.1,6600,6.4,6.3,5.9,8.1,1.22
+Freddie,Freeman,1B,,4/12/26,TEX @ LAD,LAD,TEX,4,,L,-1.5,8.5,4.4,9200,9.4,10.7,8.9,7.8,0.84
+Andy,Pages,OF,,4/12/26,TEX @ LAD,LAD,TEX,3,,R,-1.5,8.5,4.4,8400,11.8,14.6,12.4,7.4,0.88
+Max,Muncy,3B,,4/12/26,TEX @ LAD,LAD,TEX,5,,L,-1.5,8.5,4.4,8200,12.6,9.7,8.3,7.3,0.89
+Jake,Burger,1B,,4/12/26,TEX @ LAD,TEX,LAD,4,,R,1.5,8.5,4.1,7400,1.4,2.7,6.4,7.1,0.96
+Josh,Smith,2B,,4/12/26,TEX @ LAD,TEX,LAD,7,,L,1.5,8.5,4.1,5200,2.6,2,3,7.1,1.37
+Joc,Pederson,OF,,4/12/26,TEX @ LAD,TEX,LAD,5,,L,1.5,8.5,4.1,3400,3,3.5,3.1,6.8,1.99
+Danny,Jansen,C,,4/12/26,TEX @ LAD,TEX,LAD,6,,R,1.5,8.5,4.1,5800,2,5.5,5.5,6.5,1.12
+Josh,Jung,3B,,4/12/26,TEX @ LAD,TEX,LAD,8,,R,1.5,8.5,4.1,3800,3.8,3.4,3.1,6.4,1.69
+Ezequiel,Duran,2B,,4/12/26,TEX @ LAD,TEX,LAD,9,,R,1.5,8.5,4.1,3200,2.6,4.6,4.6,6.1,1.91
+Alex,Call,OF,,4/12/26,TEX @ LAD,LAD,TEX,8,,R,-1.5,8.5,4.4,4000,6.8,4.9,8,5.8,1.45
+Hyeseong,Kim,2B,,4/12/26,TEX @ LAD,LAD,TEX,9,,L,-1.5,8.5,4.4,4600,7,5.4,8.3,5.8,1.26
+Dalton,Rushing,C,,4/12/26,TEX @ LAD,LAD,TEX,7,,L,-1.5,8.5,4.4,6000,12.8,9.6,19,5.4,0.89
+Alex,Freeland,2B,,4/12/26,TEX @ LAD,LAD,TEX,6,,S,-1.5,8.5,4.4,5600,5.2,3.7,4.8,5.1,0.91
