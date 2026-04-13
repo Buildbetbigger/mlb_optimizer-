@@ -19,7 +19,6 @@ import pandas as pd
 from optimizer.features import compute_player_features, normalize_feature
 from optimizer.platform_rules import PlatformConfig
 
-
 # ---------------------------------------------------------------------------
 # A. Hitter median
 # ---------------------------------------------------------------------------
@@ -254,3 +253,92 @@ def get_captain_pool(df: pd.DataFrame, preset: Mapping[str, Any]) -> pd.DataFram
     relative = ceilings / top_ceiling
     passes = (ceilings >= threshold_value) & (relative >= relative_floor)
     return df[passes].copy()
+
+
+# ---------------------------------------------------------------------------
+# Coherence Engine (Stage 2 only)
+# ---------------------------------------------------------------------------
+#
+# Usage rules (blueprint):
+# - coherence is a Stage 2 portfolio-ranking term, NOT part of the Stage 1
+#   raw solver objective
+# - it is computed AFTER candidate lineups are generated
+# - it should not be allowed to rescue a lineup that fails captain viability
+#   or hard-conflict rules; partial credit is allowed but hard conflicts
+#   should still dominate when present
+# ---------------------------------------------------------------------------
+
+from optimizer.features import most_common_team  # noqa: E402  (Stage 2 helpers)
+from utils.constants import (  # noqa: E402
+    HARD_CONFLICT_PENALTY,
+    MEDIUM_CONFLICT_PENALTY,
+    OFF_STACK_CAPTAIN_ALIGNMENT,
+    PARTIAL_SCRIPT_FIT,
+    SCRIPT_PREFERRED_ARCHETYPES,
+    SOFT_CONFLICT_PENALTY,
+)
+
+
+def compute_coherence(lineup: Any, script_name: str, preset: Mapping[str, Any]) -> float:
+    """Compute the bounded coherence score for a single lineup.
+
+    Components (each weighted 0.25):
+    - script_fit:       1.0 if captain_archetype in SCRIPT_PREFERRED_ARCHETYPES
+                        for ``script_name``, else PARTIAL_SCRIPT_FIT (0.50)
+    - captain_alignment: 1.0 if captain on primary stack team, else
+                         OFF_STACK_CAPTAIN_ALIGNMENT (0.60)
+    - stack_integrity:   adjacent_pairs / max_pairs in the primary stack
+    - conflict_severity: max(0, 1 - (soft*0.05 + medium*0.15 + hard*0.30))
+
+    Returns a value in [0.0, 1.0]. The ``preset`` argument is accepted to
+    match the blueprint signature; the V1 implementation does not consult
+    preset-level overrides for component weights but the parameter is kept
+    so future calibration can plug in without a signature change.
+    """
+    hitter_pool = [p for p in lineup.all_players if p.is_hitter]
+    if not hitter_pool:
+        return 0.0
+
+    primary_stack_team = most_common_team(hitter_pool)
+    preferred = SCRIPT_PREFERRED_ARCHETYPES.get(script_name, [])
+
+    captain_archetype = getattr(lineup, "captain_archetype", None)
+    script_fit = 1.0 if captain_archetype in preferred else PARTIAL_SCRIPT_FIT
+
+    captain_alignment = (
+        1.0 if lineup.captain.team == primary_stack_team
+        else OFF_STACK_CAPTAIN_ALIGNMENT
+    )
+
+    stack_players = [p for p in hitter_pool if p.team == primary_stack_team]
+    orders = sorted(p.batting_order for p in stack_players if p.batting_order > 0)
+
+    adjacent_pairs = sum(
+        1 for i in range(len(orders) - 1)
+        if orders[i + 1] - orders[i] == 1
+    )
+    max_pairs = max(len(orders) - 1, 1)
+    stack_integrity = adjacent_pairs / max_pairs
+
+    conflicts = getattr(lineup, "conflicts", []) or []
+    soft_count = sum(1 for c in conflicts if c.severity == "soft")
+    medium_count = sum(1 for c in conflicts if c.severity == "medium")
+    hard_count = sum(1 for c in conflicts if c.severity == "hard")
+
+    conflict_severity = max(
+        0.0,
+        1.0 - (
+            soft_count * SOFT_CONFLICT_PENALTY
+            + medium_count * MEDIUM_CONFLICT_PENALTY
+            + hard_count * HARD_CONFLICT_PENALTY
+        ),
+    )
+
+    coherence_score = (
+        0.25 * script_fit
+        + 0.25 * captain_alignment
+        + 0.25 * stack_integrity
+        + 0.25 * conflict_severity
+    )
+
+    return coherence_score
