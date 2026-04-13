@@ -26,7 +26,13 @@ import streamlit as st
 from optimizer.calibration import compute_slate_concentration
 from optimizer.data_prep import load_csv, prepare_slate
 from optimizer.explain import build_full_lineup_output
-from optimizer.platform_rules import DK_SHOWDOWN, FD_SINGLE_GAME, get_platform
+from optimizer.platform_rules import (
+    DK_SHOWDOWN,
+    FD_SINGLE_GAME,
+    export_lineups_csv,
+    get_platform,
+    validate_export,
+)
 from optimizer.scoring import compute_all_scores
 from optimizer.solver import SolverContext, solve_candidate_set
 from utils.constants import LINEUP_SCORE_WEIGHTS, PRESETS, SCRIPT_MODIFIERS
@@ -493,5 +499,25 @@ with tab_lineups:
                                 f"`{c_obj.code}` - {c_obj.description}"
                             )
 
-            st.button("Export to CSV (placeholder)", disabled=True,
-                      help="Export wiring lands in Prompt 13.")
+            st.markdown("---")
+            st.markdown("### Export")
+            export_issues = validate_export(lineups, platform)
+            if export_issues:
+                st.error("Export validation failed:")
+                for issue in export_issues:
+                    st.markdown(f"- {issue}")
+            else:
+                csv_text = export_lineups_csv(lineups, platform)
+                st.code(csv_text, language="csv")
+                site_label = "DK" if platform.name == "DK_SHOWDOWN" else "FD"
+                slate_tag = (
+                    st.session_state.get("_uploaded_name", "slate")
+                    or "slate"
+                ).replace(".csv", "")
+                st.download_button(
+                    label=f"Download {site_label} CSV",
+                    data=csv_text,
+                    file_name=f"{site_label.lower()}_lineups_{slate_tag}.csv",
+                    mime="text/csv",
+                    type="primary",
+                )
